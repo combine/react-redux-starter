@@ -105,20 +105,13 @@ npm run test:all
 
 This will run all files that are suffixed with a `.test.js`.
 
-## Changing the Asset Host
+## Deploying to Heroku
 
-In production scenarios, you may want your assets to be hosted elsewhere besides
-on your server. Just set an environment variable to point the asset host to
-where ever you want, as defaults to `localhost:3001`. Just set it to the CDN of
-your choice.
-
-If you're using Heroku:
+Just set an environment variable to point the asset host to whereever you want,
+since it defaults to `localhost:3001`. If using Heroku to store assets, just use
+a local route. Otherwise, set it to the CDN of your choice.
 ```
 heroku config:set ASSET_HOST=/dist/
 # OR
 heroku config:set ASSET_HOST=https://s3.amazonaws.com/mybucket/myasssets/
 ```
-
-## Building Cordova Apps
-
-Please see [Building Cordova Apps](docs/cordova.md)

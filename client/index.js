@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import { routes } from 'routes';
 import configureStore from 'config/store';
-import { browserHistory, hashHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 /* Images
@@ -28,10 +28,7 @@ const rootElement = document.getElementById('app');
 // rendering.
 const initialState = window.__INITIAL_STATE__;
 const store = configureStore(initialState);
-const history = syncHistoryWithStore(
-  (__CORDOVA__ ? hashHistory : browserHistory),
-  store
-);
+const history = syncHistoryWithStore(browserHistory, store);
 
 // Render the app!
 ReactDOM.render(

@@ -5,13 +5,3 @@ npm-debug.log*
 # ignore built static files
 dist/
 webpack-assets.json
-
-# cordova ignores
-cordova/www/*
-cordova/www/**.*
-!cordova/www/.gitkeep
-cordova/plugins/
-cordova/platforms/
-
-# cordova build and release configurations
-scripts/cordova/config/*.json
