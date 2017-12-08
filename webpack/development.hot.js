@@ -63,7 +63,8 @@ new WebpackDevServer(webpack(config), {
     version: false,
     chunks: false,
     children: false
-  }
+  },
+  disableHostCheck: true
 }).listen(DEV_SERVER_PORT, DEV_SERVER_HOSTNAME, function errorCallback(err) {
   if (err) {
     console.error(err);

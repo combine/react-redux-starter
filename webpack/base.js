@@ -121,9 +121,7 @@ export default {
         test: /\.css$/,
         use: extractText.extract({
           fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader' }
-          ]
+          use: ['css-loader', 'postcss-loader'],
         })
       },
       {

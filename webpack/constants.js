@@ -6,7 +6,7 @@ import { mapValues, keyBy } from 'lodash';
  */
 export const {
   NODE_ENV, DEV_SERVER_PORT, DEV_SERVER_HOSTNAME, WEBPACK_OUTPUT_PATH,
-  ASSET_HOST, ASSET_PATH, ANALYZE, APPLICATION_BASE_URL
+  ASSET_HOST, ASSET_PATH, ANALYZE, APPLICATION_BASE_URL, DEV_SERVER_HOST_URL
 } = process.env;
 
 // The env vars to expose on the client side.
@@ -21,7 +21,6 @@ export const CLIENT_ENV_VARS = mapValues(
 );
 
 // The URL of the dev server including the hostname and port
-export const DEV_SERVER_HOST_URL = `http://${DEV_SERVER_HOSTNAME}:${DEV_SERVER_PORT}`;
 
 // The asset host to use for webpack files. In development, we will always use
 // the dev server's URL.

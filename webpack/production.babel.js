@@ -14,7 +14,11 @@ const plugins = [
     compress: {
       screw_ie8: true,
       warnings: false
-    }
+    },
+    mangle: true,
+    output: {
+      comments: false,
+    },
   }),
   new CompressionPlugin({
     asset: '[file].gz',
