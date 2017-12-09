@@ -1,8 +1,23 @@
 import webpack from 'webpack';
 import baseConfig from './base';
 import CompressionPlugin from 'compression-webpack-plugin';
+import CleanWebpackPlugin from 'clean-webpack-plugin';
+import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+let pathsToClean = [
+  'dist',
+];
 
+// the clean options to use
+let cleanOptions = {
+  root: '/var/www/react/',
+  verbose: true,
+  dry: false,
+};
 const plugins = [
+  new CleanWebpackPlugin(pathsToClean, cleanOptions),
+  new webpack.BannerPlugin({
+    banner: 'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]',
+  }),
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
     filename: '[name].[hash].js',
@@ -10,15 +25,16 @@ const plugins = [
   }),
   new webpack.optimize.AggressiveMergingPlugin(),
   new webpack.optimize.ModuleConcatenationPlugin(),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      screw_ie8: true,
-      warnings: false
-    },
-    mangle: true,
-    output: {
-      comments: false,
-    },
+  new UglifyJSPlugin({
+    uglifyOptions: {
+      compress: {
+        warnings: false
+      },
+      mangle: true,
+      output: {
+        comments: false,
+      },
+    }
   }),
   new CompressionPlugin({
     asset: '[file].gz',
