@@ -33,7 +33,7 @@ app.use(compression());
 
 // Add middleware to serve up all static files
 app.use('/dist',
-  express.static(path.join(__dirname, '../dist')),
+  express.static(path.join(__dirname, '../dist/public')),
   express.static(path.join(__dirname, '../common/images')),
   express.static(path.join(__dirname, '../common/fonts'))
 );
