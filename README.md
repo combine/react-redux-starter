@@ -30,6 +30,11 @@ For production builds:
 npm run prod:build
 npm run serve
 ```
+Or simply
+
+```
+npm run prod
+```
 
 For Heroku, simply add a `Procfile`:
 ```

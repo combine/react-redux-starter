@@ -1,5 +1,5 @@
 const autoprefixer = require('autoprefixer');
-const csso = require('postcss-csso')({restructure: true, comments: false});
+const csso = require('postcss-csso')({ restructure: true, comments: false });
 
 const pluginsList = [autoprefixer];
 if (process.env.NODE_ENV === 'production') {
@@ -7,4 +7,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 module.exports = {
   plugins: pluginsList
-}
+};

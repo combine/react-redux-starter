@@ -1,20 +1,8 @@
 import webpack from 'webpack';
 import baseConfig from './base';
 import CompressionPlugin from 'compression-webpack-plugin';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
-let pathsToClean = [
-  'dist',
-];
-
-// the clean options to use
-let cleanOptions = {
-  root: '/var/www/react/',
-  verbose: true,
-  dry: false,
-};
 const plugins = [
-  new CleanWebpackPlugin(pathsToClean, cleanOptions),
   new webpack.BannerPlugin({
     banner: 'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]',
   }),
