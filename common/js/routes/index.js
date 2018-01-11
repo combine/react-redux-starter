@@ -1,7 +1,7 @@
 'use strict';
 
-import Home from 'containers/Home';
-import Todos from 'containers/Todos';
+import Home from 'pages/Home';
+import Todos from 'pages/Todos';
 
 export default [
   {

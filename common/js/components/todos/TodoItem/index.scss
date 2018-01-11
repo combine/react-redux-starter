@@ -1,0 +1,20 @@
+.todo {
+  &.extra {
+    padding: 10px;
+  }
+
+  .completeInput {}
+
+  .text {
+    &.completed {
+      text-decoration: line-through;
+      color: #ccc;
+    }
+  }
+
+  .delete {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline
+  }
+}

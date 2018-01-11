@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import css from './index.scss';
 
-export default class HomeContainer extends Component {
+class HomePage extends Component {
   render() {
     return (
       <div className={css.home}>
@@ -14,13 +14,15 @@ export default class HomeContainer extends Component {
         <p>
           You've successfully started up your first universally rendered react
           and redux app.<br />
-          Hint: Try View Source on this page to see that it was
-          rendered on the server as well.
+          Hint: Try View Source on this page to see that it was rendered on the
+          server as well.
         </p>
         <p>
-          Check out the <Link to='/todos'>todos list</Link>.
+          Check out the <Link to="/todos">todos list</Link>.
         </p>
       </div>
     );
   }
 }
+
+export default HomePage;

@@ -17,7 +17,22 @@ router.get('/', (req, res) => {
     },
     {
       id: 3,
-      text: 'Build an app',
+      text: 'Start an app',
+      completed: 'true'
+    },
+    {
+      id: 4,
+      text: 'Make it universally rendered',
+      completed: true
+    },
+    {
+      id: 5,
+      text: 'Enable code splitting',
+      completed: true
+    },
+    {
+      id: 6,
+      text: 'Build a kick ass app',
       completed: false
     }
   ]);
