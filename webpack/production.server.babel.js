@@ -2,9 +2,13 @@ import webpack from 'webpack';
 import baseConfig from './production.babel';
 import config from '../config';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
-import { mapValues } from 'lodash';
 import nodeExternals from 'webpack-node-externals';
 import path from 'path';
+import { mapValues, set } from 'lodash';
+import { babel } from '../package.json';
+
+// override base babel options to uglify
+const babelOpts = set(babel, 'presets[0][1].targets.uglify', true);
 
 const plugins = [
   new webpack.DefinePlugin({
@@ -46,7 +50,8 @@ export default {
         test: /\.js|jsx$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: babelOpts
         }
       },
       {

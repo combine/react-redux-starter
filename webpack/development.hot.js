@@ -11,7 +11,6 @@ const {
 
 // Webpack Entry Point for dev server
 const entry = [
-  'react-hot-loader/patch',
   'webpack-dev-server/client?' + DEV_SERVER_HOST_URL,
   'webpack/hot/only-dev-server'
 ];
