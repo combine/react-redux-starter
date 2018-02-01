@@ -17,11 +17,6 @@ const entry = [
 
 // Additional plugins
 const plugins = [
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    filename: '[name].js',
-    minChunks: module => /node_modules/.test(module.resource)
-  }),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
   new webpack.NamedModulesPlugin()

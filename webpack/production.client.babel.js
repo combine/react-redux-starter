@@ -9,11 +9,6 @@ const plugins = [
       'hash:[hash], chunkhash:[chunkhash], name:[name], ' +
       'filebase:[filebase], query:[query], file:[file]'
   }),
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    filename: '[name].[hash].js',
-    minChunks: module => /node_modules/.test(module.resource)
-  }),
   new UglifyJSPlugin({
     uglifyOptions: {
       compress: {
@@ -41,7 +36,8 @@ export default {
   output: {
     ...baseConfig.output,
     ...{
-      filename: '[name].[hash].js'
+      filename: '[name].[hash].js',
+      chunkFilename: '[name].[hash].js',
     }
   },
   plugins: [...baseConfig.plugins, ...plugins],

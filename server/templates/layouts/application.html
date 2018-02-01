@@ -5,13 +5,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width height=device-height" />
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png">
-  <link type="text/css" rel="stylesheet" href="<%= vendorCss %>" />
   <link type="text/css" rel="stylesheet" href="<%= appCss %>" />
+<%= chunkCss.map(bundle => {
+  return `  <link type="text/css" rel="stylesheet" href="${process.env.PUBLIC_ASSET_PATH}${bundle.file}" />`
+}).join('\n') %>
 </head>
 <body>
   <div id="app"><%= html %></div>
   <script>window.__INITIAL_STATE__ = <%= JSON.stringify(initialState) %>;</script>
-  <script src="<%= vendorJs %>"></script>
   <script src="<%= appJs %>"></script>
+<%= chunkJs.map(bundle => {
+  return `  <script src="${process.env.PUBLIC_ASSET_PATH}${bundle.file}"></script>`
+}).join('\n') %>
+  <script>window.main();</script>
 </body>
 </html>

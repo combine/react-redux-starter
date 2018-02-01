@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import baseConfig from './base';
 
 const plugins = [
+  ...baseConfig.plugins,
   new webpack.optimize.AggressiveMergingPlugin(),
   new webpack.optimize.ModuleConcatenationPlugin(),
 ];
@@ -16,7 +17,7 @@ export default {
       filename: '[name].[hash].js'
     }
   },
-  plugins: [...baseConfig.plugins, ...plugins],
+  plugins,
   module: {
     ...baseConfig.module,
     ...{

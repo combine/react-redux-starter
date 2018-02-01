@@ -3,8 +3,10 @@ const path = require('path');
 const config = require('../config');
 const env = process.env.NODE_ENV || 'development';
 const { addPath } = require('app-module-path');
+const Loadable = require('react-loadable');
+const chokidar = require('chokidar');
 
-global.__basedir = __dirname;
+global.__basedir = path.join(__dirname, '..');
 
 // Lets us access module paths inside this server directory.
 addPath(path.join(__dirname));
@@ -54,21 +56,57 @@ const startServer = () => {
   const server = require('./server');
   const port = process.env.PORT || process.env.APPLICATION_PORT || 3000;
 
-  // Only run if there is no parent module (i.e. this is being required by a
-  // test module).
-  if (!module.parent) {
+  if (!global.ISOTools) {
     configureIsomorphicTools(server);
+  }
 
-    server.listen(port, error => {
+  return Loadable.preloadAll().then(() => {
+    return server.listen(port, error => {
       if (error) {
         console.error(error);
       } else {
         console.info(`Application server mounted on http://localhost:${port}.`);
       }
     });
-  }
-
-  return server;
+  });
 };
 
-module.exports = startServer();
+// This check is required to ensure we're not in a test environment.
+if (!module.parent) {
+  let server;
+
+  // Ensure react-loadable stats file exists before starting the server
+  const statsPath = path.join(__dirname, '..', 'react-loadable.json');
+  const watcher = chokidar.watch(statsPath, { persistent: true });
+
+  console.info(`Checking/waiting for ${statsPath}...`);
+
+  watcher.on('all', (event, path) => {
+    if (event === 'add') {
+      if (env === 'production') {
+        watcher.close();
+      }
+
+      console.info(`Stats file found at ${path}, starting server...`);
+
+      startServer().then(s => server = s);
+
+    } else if (event === 'change') {
+      if (env === 'production') {
+        watcher.close();
+      }
+
+      console.info('Stats file changed, restarting server...');
+
+      if (server) {
+        // if the server is already started, restart it.
+        server.close(() => {
+          startServer().then(s => server = s);
+        });
+      } else {
+        // otherwise, just start the server.
+        startServer().then(s => server = s);
+      }
+    }
+  });
+}

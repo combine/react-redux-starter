@@ -27,11 +27,13 @@
     ],
     "plugins": [
       "react-hot-loader/babel",
+      "react-loadable/babel",
       "transform-es2015-modules-commonjs",
       "transform-class-properties",
       "transform-decorators",
       "transform-export-extensions",
-      "transform-object-rest-spread"
+      "transform-object-rest-spread",
+      "syntax-dynamic-import"
     ]
   },
   "scripts": {
@@ -60,7 +62,7 @@
     },
     "dev:start": "npm run dev:start:client & npm run dev:start:server",
     "dev:start:server": {
-      "command": "$(npm bin)/nodemon server --exec babel-node",
+      "command": "$(npm bin)/nodemon server --exec babel-node --plugins=dynamic-import-node",
       "env": {
         "NODE_ENV": "development"
       }
@@ -72,7 +74,7 @@
       }
     },
     "prod:build": {
-      "command": "npm run prod:build:server && npm run prod:build:client",
+      "command": "npm run prod:build:client && npm run prod:build:server",
       "env": {
         "NODE_ENV": "production"
       }
@@ -128,10 +130,12 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.2",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-react-transform": "^3.0.0",
     "babel-plugin-resolver": "^1.1.0",
     "babel-plugin-syntax-class-properties": "^6.13.0",
     "babel-plugin-syntax-decorators": "^6.13.0",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators": "^6.24.1",
@@ -186,6 +190,7 @@
     "app-module-path": "^2.2.0",
     "axios": "^0.17.1",
     "body-parser": "^1.18.2",
+    "chokidar": "^2.0.0",
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
     "cookie-parser": "^1.4.3",

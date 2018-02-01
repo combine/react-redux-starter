@@ -7,10 +7,6 @@ import { Container } from 'semantic-ui-react';
 import { TodoList, TodoForm } from 'components/todos';
 
 class TodosContainer extends Component {
-  static fetchData = ({ store }) => {
-    return store.dispatch(actions.fetchTodos());
-  };
-
   static propTypes = {
     todos: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired

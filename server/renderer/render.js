@@ -1,26 +1,24 @@
 // cache the main layout template with lodash
 import { template } from 'lodash';
-import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 
 const { NODE_ENV } = process.env;
 const compile = template(require('templates/layouts/application.html'));
 const env = NODE_ENV || 'development';
 
-export default function render(component, initialState = {}) {
+export default function render(html, initialState = {}, bundles = []) {
   if (env === 'development') {
     global.ISOTools.refresh();
   }
 
   const assets = global.ISOTools.assets();
-  const vendorJs = assets.javascript.vendor;
   const appJs = assets.javascript.app;
-  const html = renderToString(component);
   const helmet = Helmet.renderStatic();
-  const vendorCss = assets.styles.vendor;
   const appCss = assets.styles.app;
+  const chunkCss = bundles.filter(bundle => bundle.file.match(/.css/));
+  const chunkJs = bundles.filter(bundle => bundle.file.match(/.js/));
 
   return compile(
-    { html, helmet, vendorCss, appCss, vendorJs, appJs, initialState }
+    { html, helmet, appCss, appJs, chunkCss, chunkJs, initialState }
   );
 }

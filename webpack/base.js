@@ -8,21 +8,25 @@ import mapValues from 'lodash/mapValues';
 import IsoPlugin from 'webpack-isomorphic-tools/plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import { ReactLoadablePlugin } from 'react-loadable/webpack';
 import config from '../config';
 
 const ssr = yn(process.env.SSR) || false;
 const isoPlugin = new IsoPlugin(config.isomorphicConfig).development(isDev);
 const extractTextPlugin = new ExtractTextPlugin({
   filename: isDev ? '[name].css' : '[name].[contenthash].css',
+  allChunks: true,
   disable: ssr
 });
-
 const plugins = [
   isoPlugin,
   extractTextPlugin,
   new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|es/),
   new webpack.DefinePlugin({
     'process.env': config.clientEnv
+  }),
+  new ReactLoadablePlugin({
+    filename: path.join(__dirname, '..', 'react-loadable.json')
   })
 ];
 
@@ -33,16 +37,13 @@ if (process.env.ANALYZE) {
 export default {
   context: path.resolve(__dirname, '..'),
   entry: {
-    vendor: ['./client/vendor'],
     app: ['./client/index']
   },
   output: {
-    path: path.join(__dirname, '../' + process.env.PUBLIC_OUTPUT_PATH),
-    filename: '[name].js',
-    // Always prepend the dev server url in dev environment so assets will
-    // be loaded from webpack-dev-server.
-    publicPath: (isDev ? process.env.DEV_SERVER_HOST_URL : '')
-      + process.env.PUBLIC_ASSET_PATH + '/'
+    path: path.join(__dirname, '..', process.env.PUBLIC_OUTPUT_PATH),
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
+    publicPath: process.env.PUBLIC_ASSET_PATH || '/'
   },
   resolve: {
     extensions: ['.js', '.jsx', '.scss'],
@@ -66,28 +67,30 @@ export default {
           path.resolve(__dirname, '../node_modules'),
           path.resolve(__dirname, '../common/css/base')
         ],
-        use: ['css-hot-loader'].concat(extractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                minimize: false,
-                importLoaders: 1,
-                localIdentName: config.cssModulesIdentifier
+        use: ['css-hot-loader'].concat(
+          extractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  minimize: false,
+                  importLoaders: 1,
+                  localIdentName: config.cssModulesIdentifier
+                }
+              },
+              { loader: 'postcss-loader' },
+              { loader: 'sass-loader' },
+              {
+                loader: 'sass-resources-loader',
+                options: {
+                  resources: './common/css/resources/*.scss'
+                }
               }
-            },
-            { loader: 'postcss-loader' },
-            { loader: 'sass-loader' },
-            {
-              loader: 'sass-resources-loader',
-              options: {
-                resources: './common/css/resources/*.scss'
-              }
-            }
-          ]
-        }))
+            ]
+          })
+        )
       },
       {
         // for .scss modules that need to be available globally, we don't pass
@@ -97,19 +100,21 @@ export default {
           path.resolve(__dirname, '../node_modules'),
           path.resolve(__dirname, '../common/css/base')
         ],
-        use: ['css-hot-loader'].concat(extractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'postcss-loader' },
-            { loader: 'sass-loader' },
-            {
-              loader: 'sass-resources-loader',
-              options: {
-                resources: './common/css/resources/*.scss'
+        use: ['css-hot-loader'].concat(
+          extractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              { loader: 'postcss-loader' },
+              { loader: 'sass-loader' },
+              {
+                loader: 'sass-resources-loader',
+                options: {
+                  resources: './common/css/resources/*.scss'
+                }
               }
-            }
-          ]
-        }))
+            ]
+          })
+        )
       },
       {
         test: /\.css$/,

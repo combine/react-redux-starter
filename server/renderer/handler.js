@@ -2,11 +2,15 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { StaticRouter, matchPath } from 'react-router';
 import { setMobileDetect, mobileParser } from 'react-responsive-redux';
+import { renderToString } from 'react-dom/server';
 import { ErrorPage } from 'components/common';
+import { getBundles } from 'react-loadable/webpack';
+import Loadable from 'react-loadable';
 import render from './render';
 import routes from 'routes';
 import configureStore from 'store';
 import App from 'containers/App';
+import stats from '../../react-loadable.json';
 
 export default function handleRender(req, res) {
   const initialState = {};
@@ -34,7 +38,9 @@ export default function handleRender(req, res) {
       });
 
       if (match) {
-        const wc = route.component && route.component.WrappedComponent;
+        const wc =
+          (route.component && route.component.WrappedComponent) ||
+          route.component;
 
         matches.push({
           route,
@@ -65,17 +71,8 @@ export default function handleRender(req, res) {
     return;
   }
 
-  // Otherwise, there is a match, so render the provider and router context
-  const context = {};
-  const component = (
-    <Provider store={store}>
-      <StaticRouter context={context} location={req.originalUrl}>
-        <App />
-      </StaticRouter>
-    </Provider>
-  );
-
-  // an array of fetchData promises.
+  // There's a match, render the component with the matched route, firing off
+  // any fetchData methods that are statically defined on the server.
   const fetchData = matches.map(match => {
     const { fetchData, ...rest } = match; // eslint-disable-line no-unused-vars
 
@@ -83,10 +80,24 @@ export default function handleRender(req, res) {
     return match.fetchData({ store, ...rest });
   });
 
+  let context = {}, modules = [];
+
+  const component = (
+    <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+      <Provider store={store}>
+        <StaticRouter context={context} location={req.baseUrl}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    </Loadable.Capture>
+  );
+
   // Execute the render only after all promises have been resolved.
   Promise.all(fetchData).then(() => {
     const state = store.getState();
-    const markup = render(component, state);
+    const html = renderToString(component);
+    const bundles = stats && getBundles(stats, modules) || [];
+    const markup = render(html, state, bundles);
 
     // A 301 redirect was rendered somewhere if context.url exists after
     // rendering has happened.

@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
     {
       id: 3,
       text: 'Start an app',
-      completed: 'true'
+      completed: true
     },
     {
       id: 4,
