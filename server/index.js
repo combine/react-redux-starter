@@ -12,6 +12,7 @@ addPath(path.join(__dirname));
 // Adds common/js to the app module path so we can access local modules without
 // having to use relative paths on the server-side. This is done on the client
 // side using webpack's `resolve`.
+addPath(path.join(__dirname, '../server'));
 addPath(path.join(__dirname, '../common'));
 addPath(path.join(__dirname, '../common/js'));
 
