@@ -4,11 +4,12 @@ A universal React/Redux boilerplate with sensible defaults. Out of the box, this
 boilerplate comes with:
 
 - Server-side rendering with Express
+- Code splitting with Webpack's dynamic `import()`s and [react-loadable](https://github.com/thejameskyle/react-loadable)
 - Sane [webpack configurations](webpack/)
 - JS hot reloading with `react-hot-loader` and `webpack-dev-server`
 - CSS, SASS and `css-modules` support with hot reloading and no [flash of unstyled content](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) (`css-hot-loader`)
 - Routing with `react-router-v4`
-- Full production builds that do not rely on `babel`.
+- Full production builds that do not rely on `babel-node`.
 
 ## Get started
 
@@ -161,13 +162,19 @@ Check the `.eslintignore` file for directories excluded from linting.
 
 ## Changing the public asset path
 
-By default, assets are built into `/dist/public`. This path is then served by
-express under the path `/assets`. This is the public asset path. In a production
+By default, assets are built into `dist/public`. This path is then served by
+express under the path `assets`. This is the public asset path. In a production
 scenario, you may want your assets to be hosted on a CDN. To do so, just change
 the `PUBLIC_ASSET_PATH` environment variant.
 
-If you're using Heroku:
+Example using Heroku, if serving via CDN:
 
 ```
 heroku config:set PUBLIC_ASSET_PATH=https://my.cdn.com
+```
+
+Example using Heroku, if serving locally:
+
+```
+heroku config:set PUBLIC_ASSET_PATH=/assets
 ```

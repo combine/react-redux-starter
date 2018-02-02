@@ -1,11 +1,13 @@
 const { mapValues, keyBy } = require('lodash');
 
 module.exports = {
-  // The env vars to expose on the client side.
+  // The env vars to expose on the client side. If you add them here, they will
+  // be available on the client as process.env[VAR_NAME], same as they would be
+  // in node.js.
+  //
+  // **WARNING**: Be careful not to expose any secrets here!
   clientEnv: mapValues(
     keyBy([
-      // All CLIENT env vars that you wish to expose go here
-      // WARNING: Be careful not to expose any secrets here!
       'NODE_ENV',
       'APPLICATION_BASE_URL'
     ]),
