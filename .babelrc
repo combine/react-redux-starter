@@ -1,0 +1,19 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current",
+          "uglify": false
+        }
+      }
+    ],
+    "react"
+  ],
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    "transform-export-extensions",
+    "transform-object-rest-spread"
+  ]
+}

@@ -3,6 +3,7 @@ import WebpackDevServer from 'webpack-dev-server';
 import webpack from 'webpack';
 import baseConfig from './base';
 import config from '../config';
+import merge from 'webpack-merge';
 
 const {
   DEV_SERVER_PORT,
@@ -10,40 +11,27 @@ const {
   DEV_SERVER_HOST_URL
 } = process.env;
 
-// Webpack Entry Point for dev server
-const entry = [
-  'webpack-dev-server/client?' + DEV_SERVER_HOST_URL,
-  'webpack/hot/only-dev-server'
-];
+const commonsChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
+  name: 'vendor',
+  filename: '[name].js',
+  minChunks: module => /node_modules/.test(module.resource)
+});
 
-// Additional plugins
-let plugins = [
-  ...baseConfig.plugins,
-  new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.NamedModulesPlugin()
-];
-
-if (!config.enableDynamicImports) {
-  plugins.push(new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    filename: '[name].js',
-    minChunks: module => /node_modules/.test(module.resource)
-  }));
-}
-
-const webpackConfig = {
-  ...baseConfig,
+const webpackConfig = merge(baseConfig, {
   devtool: 'eval',
   entry: {
-    ...baseConfig.entry,
     app: [
-      ...entry,
-      ...baseConfig.entry.app
+      'webpack-dev-server/client?' + DEV_SERVER_HOST_URL,
+      'webpack/hot/only-dev-server'
     ]
   },
-  plugins
-};
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
+    ...(!config.enableDynamicImports ? [commonsChunkPlugin] : [])
+  ]
+});
 
 console.info('Firing up Webpack dev server...\n');
 

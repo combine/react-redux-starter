@@ -12,41 +12,6 @@
     "node": "8.x.x",
     "npm": "3.x.x"
   },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "current",
-            "uglify": false
-          }
-        }
-      ],
-      "react"
-    ],
-    "plugins": [
-      "react-loadable/babel",
-      "transform-es2015-modules-commonjs",
-      "transform-class-properties",
-      "transform-decorators",
-      "transform-export-extensions",
-      "transform-object-rest-spread",
-      "syntax-dynamic-import"
-    ],
-    "env": {
-      "development": {
-        "plugins": [
-          "react-hot-loader/babel"
-        ]
-      },
-      "production": {
-        "plugins": [
-          "transform-react-remove-prop-types"
-        ]
-      }
-    }
-  },
   "_moduleAliases": {
     "@css": "common/css",
     "@fonts": "common/fonts",
@@ -77,6 +42,8 @@
     "prod:build": "better-npm-run prod:build",
     "prod:build:client": "better-npm-run prod:build:client",
     "prod:build:server": "better-npm-run prod:build:server",
+    "prod:build:server:ssr": "better-npm-run prod:build:server:ssr",
+    "prod:build:server:server": "better-npm-run prod:build:server:server",
     "test": "better-npm-run test",
     "test:all": "better-npm-run test:all",
     "test:watch": "better-npm-run test:watch",
@@ -99,7 +66,7 @@
       }
     },
     "dev:start:client": {
-      "command": "$(npm bin)/babel-node webpack/development.hot",
+      "command": "$(npm bin)/babel-node webpack/development.client.babel",
       "env": {
         "NODE_ENV": "development"
       }
@@ -110,15 +77,27 @@
         "NODE_ENV": "production"
       }
     },
+    "prod:build:client": {
+      "command": "$(npm bin)/webpack --config webpack/production.client.babel.js --progress",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
     "prod:build:server": {
-      "command": "$(npm bin)/webpack --config webpack/production.server.babel.js --progress && $(npm bin)/babel ./server -d ./dist",
+      "command": "npm run prod:build:server:ssr && npm run prod:build:server:server",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "prod:build:server": {
+      "command": "$(npm bin)/webpack --config webpack/production.server.babel.js --progress",
       "env": {
         "NODE_ENV": "production",
         "SSR": true
       }
     },
-    "prod:build:client": {
-      "command": "$(npm bin)/webpack --config webpack/production.client.babel.js --progress",
+    "prod:build:server:server": {
+      "command": "$(npm bin)/babel ./server -d ./dist --ignore '**/*.test.js,renderer/handler.js'",
       "env": {
         "NODE_ENV": "production"
       }
@@ -155,7 +134,6 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators": "^6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -204,6 +182,7 @@
     "webpack-bundle-analyzer": "^2.11.0",
     "webpack-dev-server": "^2.11.2",
     "webpack-isomorphic-tools": "^3.0.5",
+    "webpack-merge": "^4.1.2",
     "webpack-node-externals": "^1.6.0",
     "webpack-sources": "^1.1.0",
     "yn": "^2.0.0"

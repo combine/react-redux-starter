@@ -1,28 +1,19 @@
 import webpack from 'webpack';
-import baseConfig from './production.babel';
-import config from '../config';
+import baseConfig from './base';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import nodeExternals from 'webpack-node-externals';
+import merge from 'webpack-merge';
 import path from 'path';
-import { set } from 'lodash';
-import { babel } from '../package.json';
+import config from '../config';
+import babelOpts from './babel.config.server';
 
-// override base babel options to uglify
-const babelOpts = set(babel, 'presets[0][1].targets.uglify', true);
+const mergeStrategy = {
+  entry: 'replace',
+  plugins: 'replace',
+  module: 'replace'
+};
 
-const plugins = [
-  // we don't need the isomorphic and react-loadable plugins here
-  ...baseConfig.plugins.slice(config.enableDynamicImports ? 2 : 1),
-  new UglifyJSPlugin({
-    sourceMap: true
-  }),
-  new webpack.optimize.LimitChunkCountPlugin({
-    maxChunks: 1,
-  })
-];
-
-export default {
-  ...baseConfig,
+const conf = merge.strategy(mergeStrategy)(baseConfig, {
   context: null,
   target: 'node',
   entry: ['./server/renderer/handler.js'],
@@ -38,7 +29,16 @@ export default {
     filename: 'handler.built.js',
     libraryTarget: 'commonjs'
   },
-  plugins,
+  plugins: [
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new UglifyJSPlugin({
+      sourceMap: true
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    })
+  ],
   module: {
     rules: [
       {
@@ -81,4 +81,8 @@ export default {
       }
     ]
   }
-};
+});
+
+console.log(conf);
+
+export default conf;

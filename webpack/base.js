@@ -11,6 +11,7 @@ import { ReactLoadablePlugin } from 'react-loadable/webpack';
 import { mapValues, keyBy } from 'lodash';
 import { _moduleAliases } from '../package.json';
 import config from '../config';
+import babelOpts from './babel.config.client';
 
 let cwd = process.cwd();
 let ssr = yn(process.env.SSR) || false;
@@ -20,55 +21,46 @@ let extractTextPlugin = new ExtractTextPlugin({
   allChunks: true,
   disable: ssr
 });
-
-let plugins = [
-  isoPlugin,
-  extractTextPlugin,
-  new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|es/),
-  new webpack.DefinePlugin({
-    'process.env': mapValues(keyBy(config.clientEnvVars), (env) => {
-      return JSON.stringify(process.env[env]);
-    })
-  })
-];
-
-let output = {
-  path: path.join(__dirname, '..', process.env.PUBLIC_OUTPUT_PATH),
-  filename: '[name].bundle.js',
-  publicPath: process.env.PUBLIC_ASSET_PATH || '/'
-};
-
-// Enable dynamically imported code-splitting
-if (config.enableDynamicImports) {
-  plugins.unshift(new ReactLoadablePlugin({
-    filename: path.join(__dirname, '..', 'react-loadable.json')
-  }));
-
-  output.chunkFilename = '[name].bundle.js';
-}
-
-if (process.env.ANALYZE) {
-  plugins.push(new BundleAnalyzerPlugin());
-}
+let reactLoadablePlugin = new ReactLoadablePlugin({
+  filename: path.join(__dirname, '..', 'react-loadable.json')
+});
 
 export default {
   context: path.resolve(__dirname, '..'),
   entry: {
     app: ['./client/index']
   },
-  output,
+  output: {
+    path: path.join(__dirname, '..', process.env.PUBLIC_OUTPUT_PATH),
+    filename: '[name].bundle.js',
+    publicPath: process.env.PUBLIC_ASSET_PATH || '/',
+    chunkFilename: config.enableDynamicImports ? '[name].bundle.js' : undefined
+  },
   resolve: {
     extensions: ['.js', '.jsx', '.scss'],
     alias: mapValues(_moduleAliases, aliasPath =>
       path.join(cwd, ...aliasPath.split('/'))
     )
   },
+  plugins: [
+    ...(config.enableDynamicImports ? [reactLoadablePlugin] : []),
+    isoPlugin,
+    extractTextPlugin,
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|es/),
+    new webpack.DefinePlugin({
+      'process.env': mapValues(keyBy(config.clientEnvVars), (env) => {
+        return JSON.stringify(process.env[env]);
+      })
+    }),
+    ...(process.env.ANALYZE ? [new BundleAnalyzerPlugin()] : [])
+  ],
   module: {
     rules: [
       {
         test: /\.jsx$|\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        options: babelOpts
       },
       {
         // For all .scss files that should be modularized. This should exclude
@@ -156,6 +148,5 @@ export default {
         loader: 'file-loader'
       }
     ]
-  },
-  plugins
+  }
 };
