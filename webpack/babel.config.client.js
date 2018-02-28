@@ -18,7 +18,13 @@ export default {
     'transform-class-properties',
     'transform-export-extensions',
     'transform-object-rest-spread',
-    'syntax-dynamic-import'
+    'syntax-dynamic-import',
+    [
+      'lodash',
+      {
+        id: ['lodash', 'semantic-ui-react']
+      }
+    ]
   ],
   env: {
     development: {

@@ -9,7 +9,7 @@ import render from './render';
 import routes from '@routes';
 import configureStore from '@store';
 import App from '@containers/App';
-import config from '$config';
+import config from '@config';
 
 let stats = null;
 

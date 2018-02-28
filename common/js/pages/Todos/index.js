@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import Loadable from 'react-loadable';
-import { Loading } from '@components/common';
 import { fetchTodos } from '@actions/todos';
-
-// NOTE: To turn off dynamic imports, import this container normally using:
-// import TodosContainer from '@containers/Todos';
-const TodosContainer = Loadable({
-  loader: () => import('../../containers/Todos'),
-  loading: Loading
-});
+import TodosContainer from '@containers/Todos';
+// NOTE: To turn on dynamic imports, uncomment this
+// import Loadable from 'react-loadable';
+// import { Loading } from '@components/common';
+// const TodosContainer = Loadable({
+//   loader: () => import('../../containers/Todos'),
+//   loading: Loading
+// });
 
 class TodosPage extends Component {
   static fetchData = ({ store }) => {

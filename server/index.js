@@ -1,12 +1,11 @@
-// Register the `_moduleAliases` as defined in package.json.
-require('module-alias/register');
+import './registerAliases';
+import fs from 'fs';
+import path from 'path';
+import config from '@config';
+import Loadable from 'react-loadable';
+import chokidar from 'chokidar';
 
-const fs = require('fs');
-const path = require('path');
-const config = require('$config');
 const env = process.env.NODE_ENV || 'development';
-const Loadable = require('react-loadable');
-const chokidar = require('chokidar');
 
 // HTML files are read as pure strings
 require.extensions['.html'] = (module, filename) => {

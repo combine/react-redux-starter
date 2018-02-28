@@ -26,11 +26,11 @@
     "@reducers": "common/js/reducers",
     "@routes": "common/js/routes",
     "@store": "common/js/store",
+    "@templates": "server/templates",
+    "@config": "config",
     "$api": "server/api",
     "$lib": "server/lib",
-    "$middleware": "server/middleware",
-    "$templates": "server/templates",
-    "$config": "config"
+    "$middleware": "server/middleware"
   },
   "scripts": {
     "start": "better-npm-run dev:start",
@@ -41,9 +41,8 @@
     "dev:start:client": "better-npm-run dev:start:client",
     "prod:build": "better-npm-run prod:build",
     "prod:build:client": "better-npm-run prod:build:client",
+    "prod:build:ssr": "better-npm-run prod:build:ssr",
     "prod:build:server": "better-npm-run prod:build:server",
-    "prod:build:server:ssr": "better-npm-run prod:build:server:ssr",
-    "prod:build:server:server": "better-npm-run prod:build:server:server",
     "test": "better-npm-run test",
     "test:all": "better-npm-run test:all",
     "test:watch": "better-npm-run test:watch",
@@ -72,7 +71,7 @@
       }
     },
     "prod:build": {
-      "command": "npm run prod:build:client && npm run prod:build:server",
+      "command": "npm run prod:build:client && npm run prod:build:ssr && npm run prod:build:server",
       "env": {
         "NODE_ENV": "production"
       }
@@ -80,23 +79,18 @@
     "prod:build:client": {
       "command": "$(npm bin)/webpack --config webpack/production.client.babel.js --progress",
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "PUBLIC_ASSET_PATH": "/assets/"
       }
     },
-    "prod:build:server": {
-      "command": "npm run prod:build:server:ssr && npm run prod:build:server:server",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    },
-    "prod:build:server": {
-      "command": "$(npm bin)/webpack --config webpack/production.server.babel.js --progress",
+    "prod:build:ssr": {
+      "command": "$(npm bin)/webpack --config webpack/production.ssr.babel.js --progress",
       "env": {
         "NODE_ENV": "production",
         "SSR": true
       }
     },
-    "prod:build:server:server": {
+    "prod:build:server": {
       "command": "$(npm bin)/babel ./server -d ./dist --ignore '**/*.test.js,renderer/handler.js'",
       "env": {
         "NODE_ENV": "production"
@@ -128,9 +122,9 @@
     "babel-eslint": "^8.2.2",
     "babel-loader": "^7.1.3",
     "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-lodash": "^3.3.2",
     "babel-plugin-react-transform": "^3.0.0",
     "babel-plugin-syntax-class-properties": "^6.13.0",
-    "babel-plugin-syntax-decorators": "^6.13.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -141,7 +135,6 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0",
     "better-npm-run": "^0.1.0",
     "compression-webpack-plugin": "^1.1.10",
     "css-hot-loader": "^1.3.7",
@@ -177,6 +170,7 @@
     "sass-resources-loader": "^1.3.2",
     "style-loader": "^0.20.2",
     "supertest": "^3.0.0",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "url-loader": "^0.6.2",
     "webpack": "^3.11.0",
     "webpack-bundle-analyzer": "^2.11.0",

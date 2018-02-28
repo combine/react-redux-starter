@@ -5,7 +5,7 @@ import nodeExternals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import path from 'path';
 import config from '../config';
-import babelOpts from './babel.config.server';
+import babelOpts from './babel.config.ssr';
 
 const mergeStrategy = {
   entry: 'replace',
@@ -13,7 +13,7 @@ const mergeStrategy = {
   module: 'replace'
 };
 
-const conf = merge.strategy(mergeStrategy)(baseConfig, {
+export default merge.strategy(mergeStrategy)(baseConfig, {
   context: null,
   target: 'node',
   entry: ['./server/renderer/handler.js'],
@@ -82,7 +82,3 @@ const conf = merge.strategy(mergeStrategy)(baseConfig, {
     ]
   }
 });
-
-console.log(conf);
-
-export default conf;

@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 const Loading = (props) => {
   const { error, timedOut, pastDelay } = props;
 
-  console.log(props);
-
   if (error) {
     // When the loader has errored
     return (
